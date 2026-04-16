@@ -15,7 +15,7 @@ load_dotenv(BASE_DIR / ".env")
 app = Flask(__name__, static_folder=str(FRONTEND_DIR), static_url_path="")
 conversation_history = []
 
-CORS(app, resources={r"/*": {"origins": os.environ.get("FRONTEND_URL", "*")}})
+CORS(app)
 
 
 def get_gemini_api_key() -> str:
@@ -91,10 +91,9 @@ def add_cors_headers(response):
     response.headers["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS"
     return response
 
-@app.route('/api/data')
+@app.route('/api/data', methods=['GET'])
 def get_data():
-    return {"message": "Hello from Railway!"}
-
+    return jsonify({"message": "Success! Connected to Railway."})
 
 @app.route("/")
 def serve_index():
@@ -188,5 +187,4 @@ def get_chat_messages():
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
