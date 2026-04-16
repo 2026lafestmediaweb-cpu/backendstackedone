@@ -4,6 +4,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request, send_from_directory
 import google.generativeai as genai
+from flask_cors import CORS
 import requests
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -13,6 +14,8 @@ load_dotenv(BASE_DIR / ".env")
 
 app = Flask(__name__, static_folder=str(FRONTEND_DIR), static_url_path="")
 conversation_history = []
+
+CORS(app, resources={r"/*": {"origins": os.environ.get("FRONTEND_URL", "*")}})
 
 
 def get_gemini_api_key() -> str:
@@ -87,6 +90,10 @@ def add_cors_headers(response):
     response.headers["Access-Control-Allow-Headers"] = "Content-Type"
     response.headers["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS"
     return response
+
+@app.route('/api/data')
+def get_data():
+    return {"message": "Hello from Railway!"}
 
 
 @app.route("/")
